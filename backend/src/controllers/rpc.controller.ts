@@ -4,6 +4,7 @@ import {eventDispatcher} from "@deepkit/event";
 import {UserAdded} from "../events/UserEvent";
 import {User} from "../Entities/User";
 import {SQLiteDatabase} from "../db/database";
+import {faker} from "@faker-js/faker";
 
 @rpc.controller('test-rpc')
 export class RpcController {
@@ -36,7 +37,7 @@ export class RpcController {
         // }, 10_000);
 
         setTimeout(() => {
-            this._subject.next(new User('New Subscriber!'));
+            this._subject.next(new User('New Subscriber!' + Math.random(), faker.name.fullName(), faker.internet.email()));
         }, 1000);
 
         return this._subject;

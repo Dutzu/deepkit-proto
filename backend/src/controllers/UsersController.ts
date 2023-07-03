@@ -1,4 +1,4 @@
-import {http} from '@deepkit/http';
+import {http, HttpBody, HttpNotFoundError} from '@deepkit/http';
 import {DataEvent, EventDispatcher} from '@deepkit/event';
 import {ExternalServiceProvider} from "../providers/externalServiceProvider";
 import {User} from "../Entities/User";
@@ -28,7 +28,7 @@ export class UsersController {
 
     @http.POST('/')
     public async createUser() {
-        const newUser = new User('John' + Math.random());
+        const newUser = new User('John' + Math.random(), faker.name.fullName(), faker.internet.email());
         console.log(JSON.stringify(newUser));
         await this.eventDispatcher.dispatch(UserAdded, new DataEvent<User>(newUser))
         return newUser;
@@ -40,7 +40,7 @@ export class UsersController {
         //using faker create 1000 users with fake generated names and store them in the db
         const userCreationPromises = [];
         for (let i = 0; i < 1000; i++) {
-            const newUser = new User(faker.name.fullName());
+            const newUser = new User(faker.internet.userName() + Math.random(), faker.name.fullName(), faker.internet.email());
             console.log(i + ' saving user ' + JSON.stringify(newUser));
             userCreationPromises.push(this.database.persist(newUser));
         }
@@ -48,8 +48,13 @@ export class UsersController {
     }
 
     @http.PUT('/:id')
-    public async updateUser(id: string) {
-        return {name: 'John'};
+    public async updateUser(id: number, body: HttpBody<User>) {
+        console.log(body);
+        const existingUser = await this.database.query(User).filter({id});
+        if (!existingUser) {
+            throw new HttpNotFoundError('User not found');
+        }
+        return await existingUser.returning('id','username', 'email', 'name').patchOne(body);
     }
 
     @http.DELETE('/:id')

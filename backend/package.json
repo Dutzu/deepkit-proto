@@ -5,8 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "build": "tsc",
-    "start": "ts-node app.ts server:start",
-    "watch": "node -r ts-node/register --preserve-symlinks --watch app.ts server:start"
+    "start": "nodemon app.ts server:start",
   },
   "author": "",
   "license": "ISC",
@@ -17,10 +16,11 @@
     "@deepkit/orm-browser-module": "^1.0.1-alpha.92",
     "@deepkit/type": "^1.0.1-alpha.92",
     "@faker-js/faker": "^7.6.0",
-    "deepkit-openapi": "^0.0.6",
-    "ts-node": "^10.9.1"
+    "deepkit-openapi": "^0.0.6"
   },
   "devDependencies": {
-    "@deepkit/type-compiler": "^1.0.1-alpha.89"
+    "@deepkit/type-compiler": "^1.0.1-alpha.89",
+    "nodemon": "^2.0.22",
+    "ts-node": "^10.9.1"
   }
 }
